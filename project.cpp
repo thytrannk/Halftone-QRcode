@@ -6,6 +6,8 @@
 #include <iostream>
 #include <qrencode.h>
 #include "qrenc.h"
+#include "halftoneQR.h"
+#include "readQR.h"
 
 using namespace std;
 GLint imageSizeX, imageSizeY, qrSizeX, qrSizeY;
@@ -16,7 +18,7 @@ int image_bpp, image_nChannel, qr_bpp, qr_nChannel;
 int threshold = 125; // initial threshold for floyd steinberg
 FIBITMAP *img, *qr_img;
 char filename[100], outFilename[100], qrFilename[100], qrText[100];
-QRcode *qrCode;
+QRcode *qrCode, *halftonedQRCode;
 
 // halftoning functions
 // 1: dither
@@ -320,14 +322,16 @@ int main(int argc, char **argv) {
     // read in image
     FreeImage_Initialise();
     strcpy(filename, "house.jpg");
-//    strcpy(qrFilename, "qr.jpg");
     loadImage(filename, imageSizeX, imageSizeY, image_bpp, image_nChannel, &image, &img);
-//    loadImage(qrFilename, qrSizeX, qrSizeY, qr_bpp, qr_nChannel, &qr_image, &qr_img);
     removeOutput();
     strcpy(qrText, "house");
     qrCode = QRcode_encodeString(qrText, 4, QR_ECLEVEL_H, QR_MODE_8, 1);
+    halftonedQRCode = halftoneQR(qrCode, image);
     writePNG(qrCode, "output.png");
     QRcode_free(qrCode);
+    int success = readQR("output.png");
+    strcpy(qrFilename, "output.png");
+    loadImage(qrFilename, qrSizeX, qrSizeY, qr_bpp, qr_nChannel, &qr_image, &qr_img);
     glutInitWindowSize(imageSizeX*2 , imageSizeY);
     glutInitWindowPosition(0,0);
     glutCreateWindow("Project");

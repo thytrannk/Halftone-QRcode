@@ -19,6 +19,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/*
+ * Create a .png image of the QR code from QRcode object
+ */
+
 #include "qrenc.h"
 #include <stdlib.h>
 #include <string.h>
