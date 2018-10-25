@@ -5,7 +5,7 @@
 #include <FreeImage.h>
 #include <iostream>
 #include <qrencode.h>
-#include "qrenc.h"
+#include "lib/qrenc/qrenc.h"
 #include "halftoneQR.h"
 #include "readQR.h"
 

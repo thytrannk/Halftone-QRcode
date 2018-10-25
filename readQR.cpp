@@ -21,7 +21,7 @@
 #include <zxing/multi/MultipleBarcodeReader.h>
 #include <zxing/multi/GenericMultipleBarcodeReader.h>
 
-#include "ImageReaderSource.h"
+#include "lib/zxing/ImageReaderSource.h"
 #include "readQR.h"
 
 using namespace std;

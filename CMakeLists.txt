@@ -21,9 +21,10 @@ include_directories(iconv)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -framework GLUT -framework OpenGL") # compiler version and compiler flags
 
 add_executable(project
-        project.cpp qrenc.cpp qrenc.h halftoneQR.cpp halftoneQR.h readQR.cpp readQR.h
-        ImageReaderSource.cpp ImageReaderSource.h
-        lodepng.cpp lodepng.h
-        jpgd.cpp jpgd.h)
+        project.cpp halftoneQR.cpp halftoneQR.h readQR.cpp readQR.h
+        lib/qrenc/qrenc.cpp lib/qrenc/qrenc.h
+        lib/zxing/ImageReaderSource.cpp lib/zxing/ImageReaderSource.h
+        lib/zxing/lodepng.cpp lib/zxing/lodepng.h
+        lib/zxing/jpgd.cpp lib/zxing/jpgd.h)
 
 target_link_libraries(project freeimage qrencode png zxing iconv)
