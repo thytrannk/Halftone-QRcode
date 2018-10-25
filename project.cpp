@@ -5,9 +5,9 @@
 #include <FreeImage.h>
 #include <iostream>
 #include <qrencode.h>
-#include "lib/qrenc/qrenc.h"
+#include "lib/qrenc/qrenc.h" // part of libqrencode
 #include "halftoneQR.h"
-#include "readQR.h"
+#include "readQR.h" // this calls zxing library
 
 using namespace std;
 GLint imageSizeX, imageSizeY, qrSizeX, qrSizeY;
@@ -15,9 +15,9 @@ GLubyte *image, *qr_image; // pointer to the image
 GLubyte *output; // pointer to the output image
 static GLuint texName, texNameOut;
 int image_bpp, image_nChannel, qr_bpp, qr_nChannel;
-int threshold = 125; // initial threshold for floyd steinberg
+int threshold = 128; // initial threshold for floyd steinberg
 FIBITMAP *img, *qr_img;
-char filename[100], outFilename[100], qrFilename[100], qrText[100];
+char filename[100], qrFilename[100], qrText[100];
 QRcode *qrCode, *halftonedQRCode;
 
 // halftoning functions
@@ -152,22 +152,7 @@ void swapRedwithBlue(GLubyte *imageptr, GLint sizeX, GLint sizeY){
 		}
 	}
 }
-void saveImage(char * filename, GLubyte  * buf) {
-	RGBQUAD color;
-	FIBITMAP *im = FreeImage_Allocate(imageSizeX, imageSizeY, image_bpp);
-	for (int i=0; i<imageSizeY;i++) {
-        for (int j = 0; j < imageSizeX; j++) {
-            color.rgbRed = buf[(i * imageSizeX + j) * 3];
-            color.rgbGreen = buf[(i * imageSizeX + j) * 3 + 1];
-            color.rgbBlue = buf[(i * imageSizeX + j) * 3 + 2];
-            FreeImage_SetPixelColor(im, j, i, &color);
-        }
-    }
-    if(FreeImage_Save(FIF_BMP, im, filename, 0)) {
-        cout << filename<<" saved \n";
-    }
-}
-// void loadImage(filename)
+// load an image (can be an image to be halftoned, or a QR image)
 void loadImage (char *filename, GLint &sizeX, GLint &sizeY, int &bpp, int &nChannel, GLubyte **imageptr, FIBITMAP **img) {
     FREE_IMAGE_FORMAT formato = FreeImage_GetFIFFromFilename(filename);
     if (formato == FIF_UNKNOWN) {
@@ -200,8 +185,8 @@ void loadImage (char *filename, GLint &sizeX, GLint &sizeY, int &bpp, int &nChan
     }
     swapRedwithBlue(*imageptr, sizeX, sizeY);
 }
-
-void removeOutput () {
+// remove old output and create new one
+void cleanOutput () {
     if (!output) {
         delete[] output;
     }
@@ -246,8 +231,7 @@ void display() {
     glutSwapBuffers();
     glFlush();
 }
-//initTexture()
-//This is new.
+//init texture
 void initTexture() {
     glBindTexture(GL_TEXTURE_2D, texName);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -280,23 +264,11 @@ void mouse(int button, int state, int x, int y) {
 void keyPressed (unsigned char key, int x, int y) { 
 	switch(key) {
 	case '1': // dithering
-		cout<<"Dithering...\n";
 		dither();
 		break;
 	case '2': // Floyd and Steinberg
-		cout<<"Floyd and Steinberg...\n";
-		cout<<"Threshold [0-255]: ";
-		cin>> threshold;
 		floyd();
 		break;
-//	case '3': // dot diffusion
-//		cout<<"Dot diffusion...\n";
-//		cout<<"Threshold [0-255]: ";
-//		cin>> threshold;
-//		cout<<"Matrix choice [1 or 2]:";
-//		cin>>matrixChoice;
-//		dotDiffusion();
-//		break;
 //	case 'f': // load a new image file
 //		cout<<"Input filename:";
 //		cin>>filename;
@@ -305,11 +277,6 @@ void keyPressed (unsigned char key, int x, int y) {
 //		glutReshapeWindow(imageSizeX*2, imageSizeY);
 //		initGL(imageSizeX*2 , imageSizeY);
 //		break;
-	case 's': // save the output image file in bmp format
-		cout<<"Output filename:";
-		cin>>outFilename;
-		saveImage(outFilename, output);
-		break;
     default:
         break;
 	}
@@ -323,15 +290,19 @@ int main(int argc, char **argv) {
     FreeImage_Initialise();
     strcpy(filename, "house.jpg");
     loadImage(filename, imageSizeX, imageSizeY, image_bpp, image_nChannel, &image, &img);
-    removeOutput();
+    cleanOutput();
+    // generate QR code encoding a text
     strcpy(qrText, "house");
     qrCode = QRcode_encodeString(qrText, 4, QR_ECLEVEL_H, QR_MODE_8, 1);
+    // halftone the generated QR code
     halftonedQRCode = halftoneQR(qrCode, image);
-    writePNG(qrCode, "output.png");
-    QRcode_free(qrCode);
-    int success = readQR("output.png");
+    // store the halftoned QR code into a .png file
     strcpy(qrFilename, "output.png");
-    loadImage(qrFilename, qrSizeX, qrSizeY, qr_bpp, qr_nChannel, &qr_image, &qr_img);
+    writePNG(halftonedQRCode, qrFilename);
+    QRcode_free(qrCode);
+    // read the text from the .png file of the halftoned QR code
+    int success = readQR(qrFilename);
+//    loadImage(qrFilename, qrSizeX, qrSizeY, qr_bpp, qr_nChannel, &qr_image, &qr_img);
     glutInitWindowSize(imageSizeX*2 , imageSizeY);
     glutInitWindowPosition(0,0);
     glutCreateWindow("Project");

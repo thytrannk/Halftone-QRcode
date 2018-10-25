@@ -29,7 +29,7 @@ using namespace zxing;
 using namespace zxing::multi;
 using namespace zxing::qrcode;
 
-vector<Ref<Result> > decode(Ref<BinaryBitmap> image, DecodeHints hints) {
+static vector<Ref<Result> > decode(Ref<BinaryBitmap> image, DecodeHints hints) {
     Ref<Reader> reader(new MultiFormatReader);
     return vector<Ref<Result> >(1, reader->decode(image, hints));
 }
@@ -40,7 +40,7 @@ vector<Ref<Result> > decode_multi(Ref<BinaryBitmap> image, DecodeHints hints) {
     return reader.decodeMultiple(image, hints);
 }
 
-int read_image(Ref<LuminanceSource> source, bool hybrid, string expected) {
+static int read_image(Ref<LuminanceSource> source, bool hybrid, string expected) {
     vector<Ref<Result> > results;
     string cell_result;
     int res = -1;
@@ -74,7 +74,7 @@ int read_image(Ref<LuminanceSource> source, bool hybrid, string expected) {
     return res;
 }
 
-string read_expected(string imagefilename) {
+static string read_expected(string imagefilename) {
     string textfilename = imagefilename;
     string::size_type dotpos = textfilename.rfind(".");
 
