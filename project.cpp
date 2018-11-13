@@ -284,8 +284,8 @@ void keyPressed (unsigned char key, int x, int y) {
 }
 //  ------- Main: Initialize glut window and register call backs ---------- 
 int main(int argc, char **argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+//    glutInit(&argc, argv);
+//    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     // read in image
     FreeImage_Initialise();
     strcpy(filename, "house.jpg");
@@ -300,17 +300,20 @@ int main(int argc, char **argv) {
     strcpy(qrFilename, "output.png");
     writePNG(halftonedQRCode, qrFilename);
     QRcode_free(qrCode);
+    delete[] halftonedQRCode->data;
+    delete halftonedQRCode;
     // read the text from the .png file of the halftoned QR code
     int success = readQR(qrFilename);
 //    loadImage(qrFilename, qrSizeX, qrSizeY, qr_bpp, qr_nChannel, &qr_image, &qr_img);
-    glutInitWindowSize(imageSizeX*2 , imageSizeY);
-    glutInitWindowPosition(0,0);
-    glutCreateWindow("Project");
-    initGL(imageSizeX*2 , imageSizeY);
-    initTexture();// This is new.
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMouseFunc(mouse);
-    glutKeyboardFunc(keyPressed);
-    glutMainLoop();
+//    glutInitWindowSize(imageSizeX*2 , imageSizeY);
+//    glutInitWindowPosition(0,0);
+//    glutCreateWindow("Project");
+//    initGL(imageSizeX*2 , imageSizeY);
+//    initTexture();// This is new.
+//    glutDisplayFunc(display);
+//    glutReshapeFunc(reshape);
+//    glutMouseFunc(mouse);
+//    glutKeyboardFunc(keyPressed);
+//    glutMainLoop();
+    return 0;
 }
