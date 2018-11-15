@@ -18,6 +18,9 @@ enum position {
     botright,
 };
 
+int startX_img, startY_img, startX_qr, startY_qr; // start location of mapping for image and qr code
+int x, y; // width and height of mapping area
+
 static void originalCoor2Coor (int originalX, int originalY, enum position position1, int &x, int &y) {
     switch (position1) {
         case topleft:
@@ -104,10 +107,35 @@ void QRtimes3(void) {
 //    }
 }
 
+void calcStart(void) {
+    // calculate alignment between qr code and image
+
+    if (imageSizeX < halftonedQRCode->width) {
+        startX_img = 0;
+        startX_qr = (halftonedQRCode->width - imageSizeX) / 2;
+        x = imageSizeX;
+    } else {
+        startX_qr = 0;
+        startX_img = (imageSizeX - halftonedQRCode->width) / 2;
+        x = halftonedQRCode->width;
+    }
+    if (imageSizeY < halftonedQRCode->width) {
+        startY_img = 0;
+        startY_qr = (halftonedQRCode->width - imageSizeY) / 2;
+        y = imageSizeY;
+    } else {
+        startY_qr = 0;
+        startY_img = (imageSizeY - halftonedQRCode->width) / 2;
+        y = halftonedQRCode->width;
+    }
+}
+
 void *halftoneQR(void) {
 
     // create newQR as QR with module subdivided
     QRtimes3();
+    // calculate alignment between qr code and image
+    calcStart();
 
 
 }
