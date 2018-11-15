@@ -4,6 +4,6 @@
 #include <qrencode.h>
 #include <FreeImage.h>
 
-QRcode *halftoneQR(QRcode *qrCode, BYTE *image, BYTE *imp_map, int imageSizeX, int imageSizeY);
+void *halftoneQR(void);
 
 #endif //PROJECT_HALFTONED_QR_H

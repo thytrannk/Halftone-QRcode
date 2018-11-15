@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
     strcpy(qrText, "house");
     qrCode = QRcode_encodeString(qrText, 4, QR_ECLEVEL_H, QR_MODE_8, 1);
     // halftone the generated QR code
-    halftonedQRCode = halftoneQR(qrCode, image, imp_map, imageSizeX, imageSizeY);
+    halftoneQR();
     // store the halftoned QR code into a .png file
     strcpy(qrFilename, "output.png");
     writePNG(halftonedQRCode, qrFilename);

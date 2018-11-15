@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "halftoneQR.h"
+#include "project.h"
 
 enum position {
     topleft,
@@ -58,56 +59,55 @@ static void originalCoor2Coor (int originalX, int originalY, enum position posit
     }
 }
 
-QRcode *QRtimes3(QRcode *qrCode) {
+void QRtimes3(void) {
     int originalWidth = qrCode->width;
     int newWidth = originalWidth * 3;
-    auto *newQR = new QRcode;
-    newQR->version = qrCode->version;
-    newQR->width = newWidth;
-    newQR->data = new unsigned char[newWidth*newWidth];
+    halftonedQRCode = new QRcode;
+    halftonedQRCode->version = qrCode->version;
+    halftonedQRCode->width = newWidth;
+    halftonedQRCode->data = new unsigned char[newWidth*newWidth];
 
     for (int y = 0; y < originalWidth; y++) {
         for (int x = 0; x < originalWidth; x++) {
             int newX, newY;
             originalCoor2Coor(x, y, topleft, newX, newY);
-            newQR->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
+            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
             originalCoor2Coor(x, y, topmid, newX, newY);
-            newQR->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
+            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
             originalCoor2Coor(x, y, topright, newX, newY);
-            newQR->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
+            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
             originalCoor2Coor(x, y, centerleft, newX, newY);
-            newQR->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
+            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
             originalCoor2Coor(x, y, centermid, newX, newY);
-            newQR->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
+            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
             originalCoor2Coor(x, y, centerright, newX, newY);
-            newQR->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
+            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
             originalCoor2Coor(x, y, botleft, newX, newY);
-            newQR->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
+            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
             originalCoor2Coor(x, y, botmid, newX, newY);
-            newQR->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
+            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
             originalCoor2Coor(x, y, botright, newX, newY);
-            newQR->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
+            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
 
 //            if ((qrCode->data[y * originalWidth + x] & (11 << 1))) {
 ////                newQR->data[y * newWidth + x] = qrCode->data[y * newWidth + x] | 1; // turn to black
 ////                newQR->data[y * newWidth + x] = qrCode->data[y * newWidth + x] & 11111110; // turn to white
-//                newQR->data[y * newWidth + x] = qrCode->data[y * newWidth + x];
+//                halftonedQRCode->data[y * newWidth + x] = qrCode->data[y * newWidth + x];
 //            }
         }
     }
 
 //    for (int y = 0; y < newWidth; y++) {
 //        for (int x = 0; x < newWidth; x++) {
-//            newQR->data[y * newWidth + x] = qrCode->data[((int) (y/3)) * originalWidth + ((int) (x/3))];
+//            halftonedQRCode->data[y * newWidth + x] = qrCode->data[((int) (y/3)) * originalWidth + ((int) (x/3))];
 //        }
 //    }
-    return newQR;
 }
 
-QRcode *halftoneQR(QRcode *qrCode, BYTE *image, BYTE *imp_map, int imageSizeX, int imageSizeY) {
+void *halftoneQR(void) {
 
-    QRcode *newQR = QRtimes3(qrCode);
+    // create newQR as QR with module subdivided
+    QRtimes3();
 
 
-    return newQR;
 }
