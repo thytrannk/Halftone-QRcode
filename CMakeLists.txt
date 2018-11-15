@@ -25,6 +25,11 @@ add_executable(project
         lib/qrenc/qrenc.cpp lib/qrenc/qrenc.h
         lib/zxing/ImageReaderSource.cpp lib/zxing/ImageReaderSource.h
         lib/zxing/lodepng.cpp lib/zxing/lodepng.h
-        lib/zxing/jpgd.cpp lib/zxing/jpgd.h)
+        lib/zxing/jpgd.cpp lib/zxing/jpgd.h
+        lib/gco/block.h lib/gco/energy.h
+        lib/gco/GCoptimization.cpp lib/gco/GCoptimization.h
+        lib/gco/graph.cpp lib/gco/graph.h
+        lib/gco/LinkedBlockList.cpp lib/gco/LinkedBlockList.h
+        lib/gco/maxflow.cpp)
 
 target_link_libraries(project freeimage qrencode png zxing iconv)
