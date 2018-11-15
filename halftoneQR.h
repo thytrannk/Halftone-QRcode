@@ -2,8 +2,8 @@
 #define PROJECT_HALFTONED_QR_H
 
 #include <qrencode.h>
-#include <GL/glut.h>
+#include <FreeImage.h>
 
-QRcode *halftoneQR(QRcode *qrCode, GLubyte *image);
+QRcode *halftoneQR(QRcode *qrCode, BYTE *image, BYTE *imp_map, int imageSizeX, int imageSizeY);
 
 #endif //PROJECT_HALFTONED_QR_H

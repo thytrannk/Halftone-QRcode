@@ -58,7 +58,7 @@ static void originalCoor2Coor (int originalX, int originalY, enum position posit
     }
 }
 
-QRcode *halftoneQR(QRcode *qrCode, GLubyte *image) {
+QRcode *QRtimes3(QRcode *qrCode) {
     int originalWidth = qrCode->width;
     int newWidth = originalWidth * 3;
     auto *newQR = new QRcode;
@@ -101,5 +101,13 @@ QRcode *halftoneQR(QRcode *qrCode, GLubyte *image) {
 //            newQR->data[y * newWidth + x] = qrCode->data[((int) (y/3)) * originalWidth + ((int) (x/3))];
 //        }
 //    }
+    return newQR;
+}
+
+QRcode *halftoneQR(QRcode *qrCode, BYTE *image, BYTE *imp_map, int imageSizeX, int imageSizeY) {
+
+    QRcode *newQR = QRtimes3(qrCode);
+
+
     return newQR;
 }

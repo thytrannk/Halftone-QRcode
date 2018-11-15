@@ -30,6 +30,6 @@ add_executable(project
         lib/gco/GCoptimization.cpp lib/gco/GCoptimization.h
         lib/gco/graph.cpp lib/gco/graph.h
         lib/gco/LinkedBlockList.cpp lib/gco/LinkedBlockList.h
-        lib/gco/maxflow.cpp)
+        lib/gco/maxflow.cpp halftone.cpp halftone.h project.h)
 
 target_link_libraries(project freeimage qrencode png zxing iconv)
