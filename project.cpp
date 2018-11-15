@@ -288,7 +288,7 @@ int main(int argc, char **argv) {
 //    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     // read in image
     FreeImage_Initialise();
-    strcpy(filename, "house-bw-noal.png");
+    strcpy(filename, "house-bw.png");
     loadImage(filename, imageSizeX, imageSizeY, image_bpp, image_nChannel, &image, &img);
     cleanOutput();
     // generate QR code encoding a text
