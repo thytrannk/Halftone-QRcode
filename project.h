@@ -6,7 +6,7 @@
 
 extern int imageSizeX, imageSizeY, impSizeX, impSizeY, qrSizeX, qrSizeY;
 extern BYTE *image, *imp_map, *qr_image; // pointer to the image
-extern BYTE *output; // pointer to the output image
+extern BYTE *halftone; // pointer to the halftone image
 extern int image_bpp, image_nChannel, imp_bpp, imp_nChannel, qr_bpp, qr_nChannel;
 //int threshold = 128; // initial threshold for floyd steinberg
 extern FIBITMAP *img, *imp, *qr_img;

@@ -13,7 +13,7 @@ using namespace std;
 // define extern variables
 int imageSizeX, imageSizeY, impSizeX, impSizeY, qrSizeX, qrSizeY;
 BYTE *image, *imp_map, *qr_image; // pointer to the image
-BYTE *output; // pointer to the output image
+BYTE *halftone; // pointer to the halftone image
 int image_bpp, image_nChannel, imp_bpp, imp_nChannel, qr_bpp, qr_nChannel;
 FIBITMAP *img, *imp, *qr_img;
 char filename[100], qrFilename[100], qrText[100];
@@ -65,26 +65,26 @@ void loadImage (char *filename, int &sizeX, int &sizeY, int &bpp, int &nChannel,
     }
     swapRedwithBlue(*imageptr, sizeX, sizeY);
 }
-// remove old output and create new one
+// remove old halftone and create new one
 void cleanOutput () {
-    if (!output) {
-        delete[] output;
+    if (!halftone) {
+        delete[] halftone;
     }
-    output = new BYTE[imageSizeX*imageSizeY*3];
+    halftone = new BYTE[imageSizeX*imageSizeY*3];
 }
 
 //  ------- Main: Initialize glut window and register call backs ---------- 
 int main(int argc, char **argv) {
     // read in image
     FreeImage_Initialise();
-    strcpy(filename, "house-bw.png");
+    strcpy(filename, "cat-bw-small5.png");
     loadImage(filename, imageSizeX, imageSizeY, image_bpp, image_nChannel, &image, &img);
     strcpy(filename, "house-bw-imp-map.png");
     loadImage(filename, impSizeX, impSizeY, imp_bpp, imp_nChannel, &imp_map, &imp);
     cleanOutput();
     // generate QR code encoding a text
     strcpy(qrText, "house");
-    qrCode = QRcode_encodeString(qrText, 4, QR_ECLEVEL_H, QR_MODE_8, 1);
+    qrCode = QRcode_encodeString(qrText, 6, QR_ECLEVEL_H, QR_MODE_8, 1);
     // halftone the generated QR code
     halftoneQR();
     // store the halftoned QR code into a .png file

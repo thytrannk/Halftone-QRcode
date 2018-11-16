@@ -26,9 +26,9 @@ void dither ()
             else g = 255;
             if (b < m[q][p]) b = 0;
             else b = 255;
-            output[(i * imageSizeX + j) * 3] = (BYTE) r;        //red
-            output[(i * imageSizeX + j) * 3 + 1] = (BYTE) g;        //green
-            output[(i * imageSizeX + j) * 3 + 2] = (BYTE) b;        //blue
+            halftone[(i * imageSizeX + j) * 3] = (BYTE) r;        //red
+            halftone[(i * imageSizeX + j) * 3 + 1] = (BYTE) g;        //green
+            halftone[(i * imageSizeX + j) * 3 + 2] = (BYTE) b;        //blue
         }
     }
 }
@@ -109,9 +109,9 @@ void dither ()
 //                image_new[delta_nb * 3 + 2] += DELTA * error_b;
 //            }
 //
-//            output[current * 3] = (BYTE) r;        //red
-//            output[current * 3 + 1] = (BYTE) g;        //green
-//            output[current * 3 + 2] = (BYTE) b;        //blue
+//            halftone[current * 3] = (BYTE) r;        //red
+//            halftone[current * 3 + 1] = (BYTE) g;        //green
+//            halftone[current * 3 + 2] = (BYTE) b;        //blue
 //        }
 //    }
 //
