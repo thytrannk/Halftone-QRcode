@@ -2,6 +2,6 @@
 #define PROJECT_HALFTONE_H
 
 void dither ();
-//void floyd();
+void floyd();
 
 #endif //PROJECT_HALFTONE_H

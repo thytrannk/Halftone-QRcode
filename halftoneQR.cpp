@@ -121,12 +121,12 @@ void calcStart(void) {
         x = halftonedQRCode->width;
     }
     if (imageSizeY < halftonedQRCode->width) {
-        startY_img = 0;
+        startY_img = imageSizeY;
         startY_qr = (halftonedQRCode->width - imageSizeY) / 2;
         y = imageSizeY;
     } else {
         startY_qr = 0;
-        startY_img = (imageSizeY - halftonedQRCode->width) / 2;
+        startY_img = imageSizeY - ((imageSizeY - halftonedQRCode->width) / 2);
         y = halftonedQRCode->width;
     }
 }
@@ -138,17 +138,13 @@ void *halftoneQR(void) {
     // calculate alignment between qr code and image
     calcStart();
     // compute the halftone image
-    dither();
+    floyd();
     for (int j = 0; j < y; j++) {
         for (int i = 0; i < x; i++) {
-//            int x_qr = startX_qr + i;
-//            int y_qr = startY_qr + j;
             int x_img = startX_img + i;
-//            int y_img = startY_img + j;
+            int y_img = startY_img - j;
             int x_qr = startX_qr + i;
             int y_qr = startY_qr + j;
-//            int x_img = imageSizeX - (startX_img + i);
-            int y_img = imageSizeY - (startY_img + j);
             int width_qr = halftonedQRCode->width;
             if (halftonedQRCode->data[y_qr * width_qr + x_qr] >> 7) {
                 continue;
@@ -157,7 +153,7 @@ void *halftoneQR(void) {
                 // center submodule
                 continue;
             }
-            if (!halftone[(y_img * imageSizeX + x_img) * 3]) {
+            if (!halftone[(y_img * imageSizeX + x_img) * image_nChannel]) {
                 // halftone bit is black
                 halftonedQRCode->data[y_qr * width_qr + x_qr] =
                         (unsigned char) (((halftonedQRCode->data[y_qr * width_qr + x_qr] >> 1) << 1) + 1);

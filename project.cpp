@@ -18,6 +18,7 @@ int image_bpp, image_nChannel, imp_bpp, imp_nChannel, qr_bpp, qr_nChannel;
 FIBITMAP *img, *imp, *qr_img;
 char filename[100], qrFilename[100], qrText[100];
 QRcode *qrCode, *halftonedQRCode;
+int threshold = 128; // initial threshold for floyd steinberg
 
 // swap the red and blue channels - this is because
 // FreeImage loads the image in the format BGR and not RGB as used in OpenGL
@@ -73,14 +74,28 @@ void cleanOutput () {
     halftone = new BYTE[imageSizeX*imageSizeY*3];
 }
 
+void saveImage(char *filename, BYTE *buf, int bpp){
+    RGBQUAD color;
+    FIBITMAP *im = FreeImage_Allocate(imageSizeX, imageSizeY, bpp);
+    for(int i=0; i<imageSizeY;i++)
+        for(int j=0;j<imageSizeX;j++)
+        {
+            color.rgbRed = buf[(i*imageSizeX+j)*3];
+            color.rgbGreen = buf[(i*imageSizeX+j)*3+1];
+            color.rgbBlue = buf[(i*imageSizeX+j)*3+2];
+            FreeImage_SetPixelColor(im,j,i, &color);
+        }
+    FreeImage_Save(FIF_BMP, im, filename, 0);
+}
+
 //  ------- Main: Initialize glut window and register call backs ---------- 
 int main(int argc, char **argv) {
     // read in image
     FreeImage_Initialise();
-    strcpy(filename, "cat-bw-small5.png");
+    strcpy(filename, "cat-bw-small2.png");
     loadImage(filename, imageSizeX, imageSizeY, image_bpp, image_nChannel, &image, &img);
-    strcpy(filename, "house-bw-imp-map.png");
-    loadImage(filename, impSizeX, impSizeY, imp_bpp, imp_nChannel, &imp_map, &imp);
+//    strcpy(filename, "house-bw-imp-map.png");
+//    loadImage(filename, impSizeX, impSizeY, imp_bpp, imp_nChannel, &imp_map, &imp);
     cleanOutput();
     // generate QR code encoding a text
     strcpy(qrText, "house");
@@ -90,6 +105,8 @@ int main(int argc, char **argv) {
     // store the halftoned QR code into a .png file
     strcpy(qrFilename, "output.png");
     writePNG(halftonedQRCode, qrFilename);
+    strcpy(filename, "halftone.png");
+    saveImage(filename, halftone, image_bpp);
     QRcode_free(qrCode);
     delete[] halftonedQRCode->data;
     delete halftonedQRCode;
