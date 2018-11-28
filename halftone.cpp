@@ -117,3 +117,147 @@ void floyd()
 
     delete[] image_new;
 }
+
+int  weight(int x, int y)
+{
+    int w = 0;
+    // add code in here
+    w = 3 - x*x - y*y;
+    return w;
+}
+bool  isValidNeighbour(int x, int y)
+{
+    bool t = false;
+    // add code in here
+    if (x >= 0 && x < imageSizeX && y >= 0 && y < imageSizeY) {
+        t = true;
+    }
+    return t;
+}
+int classRank(int x, int y)
+{
+    int i, j, r;
+    int m1[8][8]=//M1
+            {{0,32,8,40,2,34,10,42},
+             {48,16,56,24,50,18,58,26},
+             {12,44,4,36,14,46,6,38},
+             {60,28,52,20,62,30,54,22},
+             {3,35,11,43,1,33,9,41},
+             {51,19,59,27,49,17,57,25},
+             {15,47,7,39,13,45,5,37},
+             {63,31,55,23,61,29,53,21}};
+
+//    int m2[8][8] =// M2
+//            {{34,48,40,32,29,15,23,31},
+//             {42,58,56,53,21, 5, 7,10},
+//             {50,62,61,45,13, 1, 2,18},
+//             {38,46,54,37,25,17, 9,26},
+//             {28,14,22,30,35,49,41,33},
+//             {20,4,  6,11,43,59,57,52},
+//             {12,0,  3,19,51,63,60,44},
+//             {24,16, 8,27,39,47,55,36}};
+    // add code in here
+    // The top row has y == 255, and the bottom row has y == 0
+    // Thus, the maintain the orientation, we have to convert the y-coordinate to the row number by calculating imageSizeY-1-y
+    i =  x%8;
+    j  = (imageSizeY-1-y)%8;
+    r = m1[j][i];
+
+    return r;
+}
+
+void accumNeighbour(int u, int v, int i, int j, int &w) {
+    if (classRank(u, v) > classRank(i, j)) {
+        // The top row has y == 255, and the bottom row has y == 0
+        // Thus, the maintain the orientation, we have to convert the y-coordinate to the row number by calculating imageSizeY-1-y
+        // As a result, v - j has to be switched to j - v (because the y-axis is upside-down)
+        w += weight(u-i, j-v);
+    }
+}
+
+void diffuseNeighbour(float *image_new, int u, int v, int i, int j, float error_r, float error_g, float error_b, int w) {
+    // The top row has y == 255, and the bottom row has y == 0
+    // Thus, the maintain the orientation, we have to convert the y-coordinate to the row number by calculating imageSizeY-1-y
+    // As a result, v - j has to be switched to j - v (because the y-axis is upside-down)
+    image_new[(v * imageSizeX + u) * image_nChannel] += error_r * weight(u - i, j - v) / w;
+    image_new[(v * imageSizeX + u) * image_nChannel + 1] += error_g * weight(u - i, j - v) / w;
+    image_new[(v * imageSizeX + u) * image_nChannel + 2] += error_b * weight(u - i, j - v) / w;
+}
+
+void dotDiffusion()
+{
+#define NEIGHBOURHOODSIZE 1 // other values do not seem to work well
+    // add code in here
+    int x, y, i, k;
+    int r,g,b;
+    int w;
+    float raw_r, raw_g, raw_b;
+    float error_r, error_g, error_b;
+
+    float *image_new = new float[imageSizeX*imageSizeY * image_nChannel];
+
+    for (i = 0; i < imageSizeX * imageSizeY * image_nChannel; i++) {
+        image_new[i] = (float) image[i];
+    }
+
+    for(k = 0; k < 64; k++) {
+        for(y = imageSizeY - 1; y >= 0; y--) {
+            // y is y-coordinate; small y is at the bottom of the image
+            for (x = 0; x < imageSizeX; x++) {
+                //x is x-coordinate
+                if (classRank(x, y) == k) {
+                    raw_r = image_new[(y * imageSizeX + x) * image_nChannel];            //red
+                    raw_g = image_new[(y * imageSizeX + x) * image_nChannel + 1];        //green
+                    raw_b = image_new[(y * imageSizeX + x) * image_nChannel + 2];        //blue
+
+                    if (raw_r < threshold) {
+                        r = 0;
+                    } else {
+                        r = 255;
+                    }
+                    if (raw_g < threshold) {
+                        g = 0;
+                    } else {
+                        g = 255;
+                    }
+                    if (raw_b < threshold) {
+                        b = 0;
+                    } else {
+                        b = 255;
+                    }
+                    error_r = raw_r - r;
+                    error_g = raw_g - g;
+                    error_b = raw_b - b;
+
+                    w = 0;
+
+                    for (int u = x - NEIGHBOURHOODSIZE; u <= x + NEIGHBOURHOODSIZE; u++) {
+                        for (int v = y - NEIGHBOURHOODSIZE; v <= y + NEIGHBOURHOODSIZE; v++) {
+                            // if (u,v) is not (x,y) and (u,v) is within image
+                            if ((u != x || v != y) && isValidNeighbour(u, v)) {
+                                accumNeighbour(u, v, x, y, w);
+                            }
+                        }
+                    }
+
+                    if (w > 0) {
+                        for (int u = x - NEIGHBOURHOODSIZE; u <= x + NEIGHBOURHOODSIZE; u++) {
+                            for (int v = y - NEIGHBOURHOODSIZE; v <= y + NEIGHBOURHOODSIZE; v++) {
+                                // if (u,v) is not (x,y) and (u,v) is within image
+                                if ((u != x || v != y) && isValidNeighbour(u, v)) {
+                                    diffuseNeighbour(image_new, u, v, x, y, error_r, error_g, error_b, w);
+                                }
+                            }
+                        }
+                    }
+
+                    halftone[(y * imageSizeX + x) * image_nChannel] = (BYTE) r;        //red
+                    halftone[(y * imageSizeX + x) * image_nChannel + 1] = (BYTE) g;        //green
+                    halftone[(y * imageSizeX + x) * image_nChannel + 2] = (BYTE) b;        //blue
+                }
+            }
+        }
+    }
+
+    delete[] image_new;
+}

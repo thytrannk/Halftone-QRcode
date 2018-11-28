@@ -92,7 +92,7 @@ void saveImage(char *filename, BYTE *buf, int bpp){
 int main(int argc, char **argv) {
     // read in image
     FreeImage_Initialise();
-    strcpy(filename, "cat-bw-small2.png");
+    strcpy(filename, "cat-bw-small4.png");
     loadImage(filename, imageSizeX, imageSizeY, image_bpp, image_nChannel, &image, &img);
 //    strcpy(filename, "house-bw-imp-map.png");
 //    loadImage(filename, impSizeX, impSizeY, imp_bpp, imp_nChannel, &imp_map, &imp);

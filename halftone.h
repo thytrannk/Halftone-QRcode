@@ -3,5 +3,6 @@
 
 void dither ();
 void floyd();
+void dotDiffusion();
 
 #endif //PROJECT_HALFTONE_H
