@@ -48,7 +48,7 @@ void loadImage (char *filename) {
     image_nChannel = image_bpp / 8;
     cout << "X =" << imageSizeX << " Y = " << imageSizeY << " bpp =" << image_bpp << " nChannel =" << image_nChannel << endl;
 
-    cout << "Do you want to rescale the image? (y/n) ";
+    cout << "The QR code has size 123x123 pixels. Do you want to rescale the image to better fit the code? (y/n) ";
     char rescale;
     cin >> rescale;
     if (rescale == 'y' || rescale == 'Y') {
@@ -118,7 +118,8 @@ int main(int argc, char **argv) {
     strcpy(filename, "rescaled.bmp");
     saveImage(filename, image, image_nChannel);
     // generate QR code encoding a text
-    strcpy(qrText, "house");
+    cout << "What do you want to encode in the QR code? ";
+    cin >> qrText;
     qrCode = QRcode_encodeString(qrText, 6, QR_ECLEVEL_H, QR_MODE_8, 1);
     // halftone the generated QR code
     halftoneQR();
