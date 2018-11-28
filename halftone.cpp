@@ -1,38 +1,6 @@
 #include "halftone.h"
 #include "project.h"
 
-void dither ()
-{
-    int i, j;
-    int r,g,b;
-    int p,q;
-    int m[4][4] ={{1, 7, 10,16},
-                  {12,14,3,5},
-                  {8,2,15,9},
-                  {13,11,6,4}};
-    for (i = 0; i < imageSizeY; i++) {
-        for (j = 0; j < imageSizeX; j++) {
-            r = (int) image[(i * imageSizeX + j) * image_nChannel];            //red
-            g = (int) image[(i * imageSizeX + j) * image_nChannel + 1];        //green
-            b = (int) image[(i * imageSizeX + j) * image_nChannel + 2];        //blue
-            p = i % 4;
-            q = j % 4;
-            r = (int) ((float) r / 255.0 * 16);
-            g = (int) ((float) g / 255.0 * 16);
-            b = (int) ((float) b / 255.0 * 16);
-            if (r < m[q][p]) r = 0;
-            else r = 255;
-            if (g < m[q][p]) g = 0;
-            else g = 255;
-            if (b < m[q][p]) b = 0;
-            else b = 255;
-            halftone[(i * imageSizeX + j) * image_nChannel] = (BYTE) r;        //red
-            halftone[(i * imageSizeX + j) * image_nChannel + 1] = (BYTE) g;        //green
-            halftone[(i * imageSizeX + j) * image_nChannel + 2] = (BYTE) b;        //blue
-        }
-    }
-}
-
 void floyd()
 {
 #define ALPHA 0.4375
@@ -112,6 +80,7 @@ void floyd()
             halftone[current * image_nChannel] = (BYTE) r;        //red
             halftone[current * image_nChannel + 1] = (BYTE) g;        //green
             halftone[current * image_nChannel + 2] = (BYTE) b;        //blue
+            halftone[current * image_nChannel + 3] = (BYTE) 1;     // alpha
         }
     }
 
@@ -254,6 +223,7 @@ void dotDiffusion()
                     halftone[(y * imageSizeX + x) * image_nChannel] = (BYTE) r;        //red
                     halftone[(y * imageSizeX + x) * image_nChannel + 1] = (BYTE) g;        //green
                     halftone[(y * imageSizeX + x) * image_nChannel + 2] = (BYTE) b;        //blue
+                    halftone[(y * imageSizeX + x) * image_nChannel + 23] = (BYTE) 1;    //alpha
                 }
             }
         }

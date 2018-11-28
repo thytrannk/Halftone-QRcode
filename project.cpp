@@ -14,25 +14,13 @@ using namespace std;
 int imageSizeX, imageSizeY;
 BYTE *image; // pointer to the image
 BYTE *halftone; // pointer to the halftone image
-int image_bpp, image_nChannel, imp_bpp, imp_nChannel, qr_bpp, qr_nChannel;
+int image_bpp;
+int image_nChannel;
 FIBITMAP *img;
 char filename[100], qrFilename[100], qrText[100];
 QRcode *qrCode, *halftonedQRCode;
 int threshold = 128; // initial threshold for floyd steinberg
 
-//// swap the red and blue channels - this is because
-//// FreeImage loads the image in the format BGR and not RGB as used in OpenGL
-//void swapRedwithBlue(BYTE *imageptr, int sizeX, int sizeY){
-//	// need to swap the channels
-//	BYTE a;
-//	for (int i = 0; i < sizeY; i++){
-//		for (int j = 0; j < sizeX; j++){
-//			a = imageptr[(i*sizeX + j) * 3]; // blue
-//			imageptr[(i*sizeX + j) * 3] = imageptr[(i*sizeX + j)*3+ 2];
-//			imageptr[(i*sizeX + j) * 3 + 2] = a;
-//		}
-//	}
-//}
 // load an image
 void loadImage (char *filename, int &sizeX, int &sizeY, int &bpp, int &nChannel, BYTE **imageptr, FIBITMAP **img) {
     FREE_IMAGE_FORMAT formato = FreeImage_GetFIFFromFilename(filename);
@@ -86,7 +74,7 @@ void loadImage (char *filename, int &sizeX, int &sizeY, int &bpp, int &nChannel,
         cout << "Null pointer in image\n";
         exit(1);
     }
-    
+
     FreeImage_Unload(*img);
 }
 // remove old halftone and create new one
@@ -109,7 +97,7 @@ void saveImage(char *filename, BYTE *buf, int nChannel, int bpp){
         }
     }
     FreeImage_Save(FIF_BMP, im, filename, 0);
-    FreeImage_Unload(im);
+//    FreeImage_Unload(im);
 }
 
 //  ------- Main: Initialize glut window and register call backs ---------- 
@@ -121,7 +109,7 @@ int main(int argc, char **argv) {
     cin >> filename;
     loadImage(filename, imageSizeX, imageSizeY, image_bpp, image_nChannel, &image, &img);
     cleanOutput();
-    strcpy(filename, "rescaled.png");
+    strcpy(filename, "rescaled.bmp");
     saveImage(filename, image, image_nChannel, image_bpp);
     // generate QR code encoding a text
     strcpy(qrText, "house");
@@ -131,11 +119,11 @@ int main(int argc, char **argv) {
     // store the halftoned QR code into a .png file
     strcpy(qrFilename, "output.png");
     writePNG(halftonedQRCode, qrFilename);
-    strcpy(filename, "halftone.png");
+    strcpy(filename, "halftone.bmp");
     saveImage(filename, halftone, image_nChannel, image_bpp);
     QRcode_free(qrCode);
-    delete[] halftonedQRCode->data;
-    delete halftonedQRCode;
+//    delete[] halftonedQRCode->data;
+//    delete halftonedQRCode;
     // read the text from the .png file of the halftoned QR code
     int result = readQR(qrFilename);
     if (result) {

@@ -7,62 +7,6 @@
 #include "project.h"
 #include "halftone.h"
 
-//enum position {
-//    topleft,
-//    topmid,
-//    topright,
-//    centerleft,
-//    centermid,
-//    centerright,
-//    botleft,
-//    botmid,
-//    botright,
-//};
-
-int startX_img, startY_img, startX_qr, startY_qr; // start location of mapping for image and qr code
-int x, y; // width and height of mapping area
-
-//static void originalCoor2Coor (int originalX, int originalY, enum position position1, int &x, int &y) {
-//    switch (position1) {
-//        case topleft:
-//            x = originalX * 3;
-//            y = originalY * 3;
-//            break;
-//        case topmid:
-//            x = originalX * 3 + 1;
-//            y = originalY * 3;
-//            break;
-//        case topright:
-//            x = originalX * 3 + 2;
-//            y = originalY * 3;
-//            break;
-//        case centerleft:
-//            x = originalX * 3;
-//            y = originalY * 3 + 1;
-//            break;
-//        case centermid:
-//            x = originalX * 3 + 1;
-//            y = originalY * 3 + 1;
-//            break;
-//        case centerright:
-//            x = originalX * 3 + 2;
-//            y = originalY * 3 + 1;
-//            break;
-//        case botleft:
-//            x = originalX * 3;
-//            y = originalY * 3 + 2;
-//            break;
-//        case botmid:
-//            x = originalX * 3 + 1;
-//            y = originalY * 3 + 2;
-//            break;
-//        case botright:
-//            x = originalX * 3 + 2;
-//            y = originalY * 3 + 2;
-//            break;
-//    }
-//}
-
 void QRtimes3(void) {
     int originalWidth = qrCode->width;
     int newWidth = originalWidth * 3;
@@ -71,30 +15,6 @@ void QRtimes3(void) {
     halftonedQRCode->width = newWidth;
     halftonedQRCode->data = new unsigned char[newWidth*newWidth];
 
-//    for (int y = 0; y < originalWidth; y++) {
-//        for (int x = 0; x < originalWidth; x++) {
-//            int newX, newY;
-//            originalCoor2Coor(x, y, topleft, newX, newY);
-//            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
-//            originalCoor2Coor(x, y, topmid, newX, newY);
-//            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
-//            originalCoor2Coor(x, y, topright, newX, newY);
-//            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
-//            originalCoor2Coor(x, y, centerleft, newX, newY);
-//            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
-//            originalCoor2Coor(x, y, centermid, newX, newY);
-//            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
-//            originalCoor2Coor(x, y, centerright, newX, newY);
-//            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
-//            originalCoor2Coor(x, y, botleft, newX, newY);
-//            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
-//            originalCoor2Coor(x, y, botmid, newX, newY);
-//            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
-//            originalCoor2Coor(x, y, botright, newX, newY);
-//            halftonedQRCode->data[newY * newWidth + newX] = qrCode->data[y * originalWidth + x];
-//        }
-//    }
-
     for (int y = 0; y < newWidth; y++) {
         for (int x = 0; x < newWidth; x++) {
             halftonedQRCode->data[y * newWidth + x] = qrCode->data[((int) (y/3)) * originalWidth + ((int) (x/3))];
@@ -102,7 +22,7 @@ void QRtimes3(void) {
     }
 }
 
-void calcStart(void) {
+void calcStart(int &startX_img, int &startY_img, int &startX_qr, int &startY_qr, int &x, int &y) {
     // calculate alignment between qr code and image
 
     if (imageSizeX < halftonedQRCode->width) {
@@ -130,7 +50,9 @@ void *halftoneQR(void) {
     // create newQR as QR with module subdivided
     QRtimes3();
     // calculate alignment between qr code and image
-    calcStart();
+    int startX_img, startY_img, startX_qr, startY_qr; // start location of mapping for image and qr code
+    int x, y; // width and height of mapping area
+    calcStart(startX_img, startY_img, startX_qr, startY_qr, x, y);
     // compute the halftone image
     floyd();
     for (int j = 0; j < y; j++) {
