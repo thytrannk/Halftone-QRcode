@@ -71,9 +71,13 @@ void loadImage (char *filename) {
     }
     image = FreeImage_GetBits(img);
     if (image == nullptr) {
-        cout << "Null pointer in image\n";
+        cout << "Null pointer in image.\n";
         exit(1);
     }
+
+//    for (int j = 0; j < imageSizeX; j++) {
+//       cout << "image=" << (int) image[(150 * imageSizeX + j) * image_nChannel] << endl;
+//    }
 
     FreeImage_Unload(img);
 }
@@ -85,9 +89,9 @@ void cleanOutput () {
     halftone = new BYTE[imageSizeX * imageSizeY * image_nChannel];
 }
 
-void saveImage(char *filename, BYTE *buf, int nChannel, int bpp){
+void saveImage(char *filename, BYTE *buf, int nChannel){
     RGBQUAD color;
-    FIBITMAP *im = FreeImage_Allocate(imageSizeX, imageSizeY, bpp);
+    FIBITMAP *im = FreeImage_Allocate(imageSizeX, imageSizeY, 24);
     for (int i = 0; i < imageSizeY; i++) {
         for (int j = 0; j < imageSizeX; j++) {
             color.rgbRed = buf[(i * imageSizeX + j) * nChannel];
@@ -109,7 +113,7 @@ int main(int argc, char **argv) {
     loadImage(filename);
     cleanOutput();
     strcpy(filename, "rescaled.bmp");
-    saveImage(filename, image, image_nChannel, image_bpp);
+    saveImage(filename, image, image_nChannel);
     // generate QR code encoding a text
     strcpy(qrText, "house");
     qrCode = QRcode_encodeString(qrText, 6, QR_ECLEVEL_H, QR_MODE_8, 1);
@@ -119,7 +123,7 @@ int main(int argc, char **argv) {
     strcpy(qrFilename, "output.png");
     writePNG(halftonedQRCode, qrFilename);
     strcpy(filename, "halftone.bmp");
-    saveImage(filename, halftone, image_nChannel, image_bpp);
+    saveImage(filename, halftone, image_nChannel);
     QRcode_free(qrCode);
     delete[] halftonedQRCode->data;
     delete halftonedQRCode;
