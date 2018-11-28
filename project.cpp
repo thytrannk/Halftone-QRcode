@@ -55,6 +55,23 @@ void loadImage (char *filename, int &sizeX, int &sizeY, int &bpp, int &nChannel,
         cout << "convert to 24 bit before running this program\n";
         exit(1);
     } else {
+        cout << "Do you want to rescale the image? (y/n) ";
+        char rescale;
+        cin >> rescale;
+        if (rescale == 'y') {
+            cout << "New width: ";
+            int width;
+            cin >> width;
+            cout << "New height: ";
+            int height;
+            cin >> height;
+            *img = FreeImage_Rescale(*img, width, height, FILTER_BILINEAR);
+            sizeX = FreeImage_GetWidth(*img);
+            sizeY = FreeImage_GetHeight(*img);
+            bpp = FreeImage_GetBPP(*img);
+            nChannel = bpp / 8;
+            cout << "X =" << sizeX << " Y = " << sizeY << " bpp =" << bpp << " nChannel =" << nChannel << "\n";
+        }
         if (!(*imageptr)) {
             delete[] (*imageptr);
         }
@@ -92,7 +109,9 @@ void saveImage(char *filename, BYTE *buf, int bpp){
 int main(int argc, char **argv) {
     // read in image
     FreeImage_Initialise();
-    strcpy(filename, "cat-bw-small4.png");
+    // strcpy(filename, "cat-bw-small4.png");
+    cout << "Object image file name: ";
+    cin >> filename;
     loadImage(filename, imageSizeX, imageSizeY, image_bpp, image_nChannel, &image, &img);
 //    strcpy(filename, "house-bw-imp-map.png");
 //    loadImage(filename, impSizeX, impSizeY, imp_bpp, imp_nChannel, &imp_map, &imp);
