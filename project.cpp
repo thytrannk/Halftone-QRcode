@@ -22,30 +22,30 @@ QRcode *qrCode, *halftonedQRCode;
 int threshold = 128; // initial threshold for floyd steinberg
 
 // load an image
-void loadImage (char *filename, int &sizeX, int &sizeY, int &bpp, int &nChannel, BYTE **imageptr, FIBITMAP **img) {
+void loadImage (char *filename) {
     FREE_IMAGE_FORMAT formato = FreeImage_GetFIFFromFilename(filename);
     if (formato == FIF_UNKNOWN) {
         cout << "Image format is unknown!\n";
         exit(1);
     }
-    if (!(*img)) FreeImage_Unload(*img);
-    *img = FreeImage_Load(formato, filename, RAW_DISPLAY);
-    if (!(*img)) {
+    if (!img) FreeImage_Unload(img);
+    img = FreeImage_Load(formato, filename, RAW_DISPLAY);
+    if (!img) {
         cout << "Image cannot be found!";
         exit(1);
     }
     // Convert non-32 bit images
-    if (FreeImage_GetBPP(*img) != 32) {
-        FIBITMAP* oldImage = *img;
-        *img = FreeImage_ConvertTo32Bits(oldImage);
+    if (FreeImage_GetBPP(img) != 32) {
+        FIBITMAP* oldImage = img;
+        img = FreeImage_ConvertTo32Bits(oldImage);
         FreeImage_Unload(oldImage);
     }
 
-    sizeX = FreeImage_GetWidth(*img);
-    sizeY = FreeImage_GetHeight(*img);
-    bpp = FreeImage_GetBPP(*img);
-    nChannel = bpp / 8;
-    cout << "X =" << sizeX << " Y = " << sizeY << " bpp =" << bpp << " nChannel =" << nChannel << "\n";
+    imageSizeX = FreeImage_GetWidth(img);
+    imageSizeY = FreeImage_GetHeight(img);
+    image_bpp = FreeImage_GetBPP(img);
+    image_nChannel = image_bpp / 8;
+    cout << "X =" << imageSizeX << " Y = " << imageSizeY << " bpp =" << image_bpp << " nChannel =" << image_nChannel << endl;
 
     cout << "Do you want to rescale the image? (y/n) ";
     char rescale;
@@ -57,32 +57,32 @@ void loadImage (char *filename, int &sizeX, int &sizeY, int &bpp, int &nChannel,
         cout << "New height: ";
         int height;
         cin >> height;
-        FIBITMAP *temp = *img;
-        *img = FreeImage_Rescale(temp, width, height, FILTER_BOX);
+        FIBITMAP *temp = img;
+        img = FreeImage_Rescale(temp, width, height, FILTER_BOX);
         FreeImage_Unload(temp);
-        sizeX = FreeImage_GetWidth(*img);
-        sizeY = FreeImage_GetHeight(*img);
-        bpp = FreeImage_GetBPP(*img);
-        nChannel = bpp / 8;
-        cout << "X =" << sizeX << " Y = " << sizeY << " bpp =" << bpp << " nChannel =" << nChannel << "\n";
+        imageSizeX = FreeImage_GetWidth(img);
+        imageSizeY = FreeImage_GetHeight(img);
+        image_bpp = FreeImage_GetBPP(img);
+        image_nChannel = image_bpp / 8;
+        cout << "X =" << imageSizeX << " Y = " << imageSizeY << " bpp =" << image_bpp << " nChannel =" << image_nChannel << endl;
     }
-    if (!(*imageptr)) {
-        delete[] (*imageptr);
+    if (!image) {
+        delete[] image;
     }
-    *imageptr = FreeImage_GetBits(*img);
-    if (*imageptr == nullptr) {
+    image = FreeImage_GetBits(img);
+    if (image == nullptr) {
         cout << "Null pointer in image\n";
         exit(1);
     }
 
-    FreeImage_Unload(*img);
+    FreeImage_Unload(img);
 }
 // remove old halftone and create new one
 void cleanOutput () {
     if (!halftone) {
         delete[] halftone;
     }
-    halftone = new BYTE[imageSizeX*imageSizeY*3];
+    halftone = new BYTE[imageSizeX * imageSizeY * image_nChannel];
 }
 
 void saveImage(char *filename, BYTE *buf, int nChannel, int bpp){
@@ -97,17 +97,16 @@ void saveImage(char *filename, BYTE *buf, int nChannel, int bpp){
         }
     }
     FreeImage_Save(FIF_BMP, im, filename, 0);
-//    FreeImage_Unload(im);
+    FreeImage_Unload(im);
 }
 
 //  ------- Main: Initialize glut window and register call backs ---------- 
 int main(int argc, char **argv) {
     // read in image
     FreeImage_Initialise();
-    // strcpy(filename, "cat-bw-small4.png");
     cout << "Object image file name: ";
     cin >> filename;
-    loadImage(filename, imageSizeX, imageSizeY, image_bpp, image_nChannel, &image, &img);
+    loadImage(filename);
     cleanOutput();
     strcpy(filename, "rescaled.bmp");
     saveImage(filename, image, image_nChannel, image_bpp);
@@ -122,8 +121,8 @@ int main(int argc, char **argv) {
     strcpy(filename, "halftone.bmp");
     saveImage(filename, halftone, image_nChannel, image_bpp);
     QRcode_free(qrCode);
-//    delete[] halftonedQRCode->data;
-//    delete halftonedQRCode;
+    delete[] halftonedQRCode->data;
+    delete halftonedQRCode;
     // read the text from the .png file of the halftoned QR code
     int result = readQR(qrFilename);
     if (result) {
