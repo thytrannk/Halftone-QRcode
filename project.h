@@ -12,5 +12,6 @@ extern FIBITMAP *img;
 extern char filename[100], qrFilename[100], qrText[100];
 extern QRcode *qrCode, *halftonedQRCode;
 extern int threshold; // initial threshold for floyd steinberg
+extern int method;
 
 #endif //PROJECT_PROJECT_H

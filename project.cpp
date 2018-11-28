@@ -20,6 +20,7 @@ FIBITMAP *img;
 char filename[100], qrFilename[100], qrText[100];
 QRcode *qrCode, *halftonedQRCode;
 int threshold = 128; // initial threshold for floyd steinberg
+int method = 1;
 
 // load an image
 void loadImage (char *filename) {
@@ -75,10 +76,6 @@ void loadImage (char *filename) {
         exit(1);
     }
 
-//    for (int j = 0; j < imageSizeX; j++) {
-//       cout << "image=" << (int) image[(150 * imageSizeX + j) * image_nChannel] << endl;
-//    }
-
     FreeImage_Unload(img);
 }
 // remove old halftone and create new one
@@ -112,6 +109,12 @@ int main(int argc, char **argv) {
     cin >> filename;
     loadImage(filename);
     cleanOutput();
+    cout << "Which halftoning algorithm do you want to use? (1: Floyd-Steinberg; 2: dot diffusion) ";
+    cin >> method;
+    if (method != 1 && method != 2) {
+        cout << "Default algorithm: Floyd-Steinberg." << endl;
+        method = 1;
+    }
     strcpy(filename, "rescaled.bmp");
     saveImage(filename, image, image_nChannel);
     // generate QR code encoding a text
@@ -120,7 +123,8 @@ int main(int argc, char **argv) {
     // halftone the generated QR code
     halftoneQR();
     // store the halftoned QR code into a .png file
-    strcpy(qrFilename, "output.png");
+    cout << "Output filename (.png format): ";
+    cin >> qrFilename;
     writePNG(halftonedQRCode, qrFilename);
     strcpy(filename, "halftone.bmp");
     saveImage(filename, halftone, image_nChannel);

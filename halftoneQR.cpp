@@ -54,7 +54,11 @@ void *halftoneQR(void) {
     int x, y; // width and height of mapping area
     calcStart(startX_img, startY_img, startX_qr, startY_qr, x, y);
     // compute the halftone image
-    floyd();
+    if (method == 2) {
+        dotDiffusion();
+    } else {
+        floyd();
+    }
     for (int j = 0; j < y; j++) {
         for (int i = 0; i < x; i++) {
             int x_img = startX_img + i;

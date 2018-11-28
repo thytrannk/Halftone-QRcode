@@ -116,6 +116,7 @@ int readQR (char *filename) {
     }
 
     string expected = read_expected(filename);
+    cout << "Decoded information from halftone QR: ";
     int result = read_image(source, false, expected);
     return result;
 }
