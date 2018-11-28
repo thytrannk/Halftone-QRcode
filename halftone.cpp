@@ -1,13 +1,11 @@
 #include "halftone.h"
 #include "project.h"
 
-void floyd()
-{
+void floyd() {
 #define ALPHA 0.4375
 #define BETA 0.1875
 #define GAMMA 0.3125
 #define DELTA 0.0625
-// add code in here
 
     int x, y, i;
     int r,g,b;
@@ -87,24 +85,19 @@ void floyd()
     delete[] image_new;
 }
 
-int  weight(int x, int y)
-{
+int  weight(int x, int y) {
     int w = 0;
-    // add code in here
     w = 3 - x*x - y*y;
     return w;
 }
-bool  isValidNeighbour(int x, int y)
-{
+bool  isValidNeighbour(int x, int y) {
     bool t = false;
-    // add code in here
     if (x >= 0 && x < imageSizeX && y >= 0 && y < imageSizeY) {
         t = true;
     }
     return t;
 }
-int classRank(int x, int y)
-{
+int classRank(int x, int y) {
     int i, j, r;
     int m1[8][8]=//M1
             {{0,32,8,40,2,34,10,42},
@@ -125,7 +118,7 @@ int classRank(int x, int y)
 //             {20,4,  6,11,43,59,57,52},
 //             {12,0,  3,19,51,63,60,44},
 //             {24,16, 8,27,39,47,55,36}};
-    // add code in here
+
     // The top row has y == 255, and the bottom row has y == 0
     // Thus, the maintain the orientation, we have to convert the y-coordinate to the row number by calculating imageSizeY-1-y
     i =  x%8;
@@ -153,10 +146,9 @@ void diffuseNeighbour(float *image_new, int u, int v, int i, int j, float error_
     image_new[(v * imageSizeX + u) * image_nChannel + 2] += error_b * weight(u - i, j - v) / w;
 }
 
-void dotDiffusion()
-{
+void dotDiffusion() {
 #define NEIGHBOURHOODSIZE 1 // other values do not seem to work well
-    // add code in here
+
     int x, y, i, k;
     int r,g,b;
     int w;

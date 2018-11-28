@@ -17,7 +17,8 @@ BYTE *halftone; // pointer to the halftone image
 int image_bpp;
 int image_nChannel;
 FIBITMAP *img;
-char filename[100], qrFilename[100], qrText[100];
+char filename[100], qrFilename[100];
+string qrText;
 QRcode *qrCode, *halftonedQRCode;
 int threshold = 128; // initial threshold for floyd steinberg
 int method = 1;
@@ -35,12 +36,13 @@ void loadImage (char *filename) {
         cout << "Image cannot be found!";
         exit(1);
     }
-    // Convert non-32 bit images
-    if (FreeImage_GetBPP(img) != 32) {
-        FIBITMAP* oldImage = img;
-        img = FreeImage_ConvertTo32Bits(oldImage);
-        FreeImage_Unload(oldImage);
-    }
+    // Convert to 32 bit greyscale images
+
+    FIBITMAP* tempImg;
+    tempImg = FreeImage_ConvertToGreyscale(img);
+    FreeImage_Unload(img);
+    img = FreeImage_ConvertTo32Bits(tempImg);
+    FreeImage_Unload(tempImg);
 
     imageSizeX = FreeImage_GetWidth(img);
     imageSizeY = FreeImage_GetHeight(img);
@@ -119,8 +121,9 @@ int main(int argc, char **argv) {
     saveImage(filename, image, image_nChannel);
     // generate QR code encoding a text
     cout << "What do you want to encode in the QR code? ";
-    cin >> qrText;
-    qrCode = QRcode_encodeString(qrText, 6, QR_ECLEVEL_H, QR_MODE_8, 1);
+    cin.ignore();
+    getline(cin, qrText);
+    qrCode = QRcode_encodeString(qrText.c_str(), 6, QR_ECLEVEL_H, QR_MODE_8, 1);
     // halftone the generated QR code
     halftoneQR();
     // store the halftoned QR code into a .png file
