@@ -223,7 +223,7 @@ void dotDiffusion()
                     halftone[(y * imageSizeX + x) * image_nChannel] = (BYTE) r;        //red
                     halftone[(y * imageSizeX + x) * image_nChannel + 1] = (BYTE) g;        //green
                     halftone[(y * imageSizeX + x) * image_nChannel + 2] = (BYTE) b;        //blue
-                    halftone[(y * imageSizeX + x) * image_nChannel + 23] = (BYTE) 1;    //alpha
+                    halftone[(y * imageSizeX + x) * image_nChannel + 3] = (BYTE) 1;    //alpha
                 }
             }
         }
