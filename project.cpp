@@ -6,7 +6,7 @@
 #include "project.h"
 #include "lib/qrenc/qrenc.h" // part of libqrencode
 #include "halftoneQR.h"
-#include "readQR.h" // this calls zxing library
+#include "lib/zxing/readQR.h" // this calls zxing library
 
 using namespace std;
 
