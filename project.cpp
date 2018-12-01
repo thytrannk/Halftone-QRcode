@@ -127,8 +127,10 @@ int main(int argc, char **argv) {
     // halftone the generated QR code
     halftoneQR();
     // store the halftoned QR code into a .png file
-    cout << "Output filename (.png format): ";
+    cout << "Output filename (without extension): ";
     cin >> qrFilename;
+    char ext[5] = ".png";
+    strcat(qrFilename, ext);
     writePNG(halftonedQRCode, qrFilename);
 //    strcpy(filename, "halftone.bmp");
 //    saveImage(filename, halftone, image_nChannel);

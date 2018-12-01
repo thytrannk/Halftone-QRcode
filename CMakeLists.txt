@@ -28,3 +28,4 @@ add_executable(project
         lib/zxing/readQR.cpp lib/zxing/readQR.h)
 
 target_link_libraries(project freeimage qrencode png zxing iconv)
+#target_link_libraries(project freeimage qrencode png zxing)
