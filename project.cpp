@@ -1,7 +1,3 @@
-
-//  AUTHOR:  Herb Yang
-//  
-
 #include <iostream>
 #include "project.h"
 #include "lib/qrenc/qrenc.h" // part of libqrencode
@@ -103,7 +99,6 @@ void saveImage(char *filename, BYTE *buf, int nChannel){
     FreeImage_Unload(im);
 }
 
-//  ------- Main: Initialize glut window and register call backs ---------- 
 int main(int argc, char **argv) {
     // read in image
     FreeImage_Initialise();
@@ -143,6 +138,5 @@ int main(int argc, char **argv) {
     if (result) {
         cout << "Could not decode QR code." << endl;
     }
-
     return 0;
 }
