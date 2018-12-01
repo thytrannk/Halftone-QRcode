@@ -15,8 +15,10 @@ include_directories(png)
 find_library(ZXING_LIBRARY zxing)
 include_directories(zxing)
 
-find_library(ICONV_LIBRARY iconv)
-include_directories(iconv)
+if(APPLE)
+    find_library(ICONV_LIBRARY iconv)
+    include_directories(iconv)
+endif()
 
 add_executable(project
         project.cpp halftoneQR.cpp halftoneQR.h
@@ -27,5 +29,8 @@ add_executable(project
         lib/zxing/jpgd.cpp lib/zxing/jpgd.h
         lib/zxing/readQR.cpp lib/zxing/readQR.h)
 
-target_link_libraries(project freeimage qrencode png zxing iconv)
-#target_link_libraries(project freeimage qrencode png zxing)
+target_link_libraries(project freeimage qrencode png zxing)
+
+if(APPLE)
+    target_link_libraries(project iconv)
+endif()
