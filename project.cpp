@@ -50,7 +50,7 @@ void loadImage (char *filename) {
     image_nChannel = image_bpp / 8;
     cout << "X =" << imageSizeX << " Y = " << imageSizeY << " bpp =" << image_bpp << " nChannel =" << image_nChannel << endl;
 
-    cout << "The QR code has size 123x123 pixels. Do you want to rescale the image to better fit the code? (y/n) ";
+    cout << "The QR code has size 123x123 pixels. Do you want to rescale the image to better fit the QR code? (y/n) ";
     char rescale;
     cin >> rescale;
     if (rescale == 'y' || rescale == 'Y') {
@@ -117,8 +117,8 @@ int main(int argc, char **argv) {
         cout << "Default algorithm: Floyd-Steinberg." << endl;
         method = 1;
     }
-    strcpy(filename, "rescaled.bmp");
-    saveImage(filename, image, image_nChannel);
+//    strcpy(filename, "rescaled.bmp");
+//    saveImage(filename, image, image_nChannel);
     // generate QR code encoding a text
     cout << "What do you want to encode in the QR code? ";
     cin.ignore();
@@ -130,8 +130,8 @@ int main(int argc, char **argv) {
     cout << "Output filename (.png format): ";
     cin >> qrFilename;
     writePNG(halftonedQRCode, qrFilename);
-    strcpy(filename, "halftone.bmp");
-    saveImage(filename, halftone, image_nChannel);
+//    strcpy(filename, "halftone.bmp");
+//    saveImage(filename, halftone, image_nChannel);
     QRcode_free(qrCode);
     delete[] halftonedQRCode->data;
     delete halftonedQRCode;
