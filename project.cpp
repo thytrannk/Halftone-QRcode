@@ -136,6 +136,7 @@ int main(int argc, char **argv) {
     delete[] halftonedQRCode->data;
     delete halftonedQRCode;
     // read the text from the .png file of the halftoned QR code
+    cout << "Decoded information from halftone QR: ";
     int result = readQR(qrFilename);
     if (result) {
         cout << "Could not decode QR code." << endl;
