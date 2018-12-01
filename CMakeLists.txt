@@ -18,8 +18,6 @@ include_directories(zxing)
 find_library(ICONV_LIBRARY iconv)
 include_directories(iconv)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -framework GLUT -framework OpenGL") # compiler version and compiler flags
-
 add_executable(project
         project.cpp halftoneQR.cpp halftoneQR.h
         halftone.cpp halftone.h
