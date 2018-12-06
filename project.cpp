@@ -44,7 +44,7 @@ void loadImage (char *filename) {
     imageSizeY = FreeImage_GetHeight(img);
     image_bpp = FreeImage_GetBPP(img);
     image_nChannel = image_bpp / 8;
-    cout << "X =" << imageSizeX << " Y = " << imageSizeY << " bpp =" << image_bpp << " nChannel =" << image_nChannel << endl;
+    cout << "X = " << imageSizeX << "; Y = " << imageSizeY << "; bpp = " << image_bpp << "; nChannel = " << image_nChannel << endl;
 
     cout << "The QR code has size 123x123 pixels. Do you want to rescale the image to better fit the QR code? (y/n) ";
     char rescale;
@@ -63,7 +63,7 @@ void loadImage (char *filename) {
         imageSizeY = FreeImage_GetHeight(img);
         image_bpp = FreeImage_GetBPP(img);
         image_nChannel = image_bpp / 8;
-        cout << "X =" << imageSizeX << " Y = " << imageSizeY << " bpp =" << image_bpp << " nChannel =" << image_nChannel << endl;
+        cout << "X = " << imageSizeX << "; Y = " << imageSizeY << "; bpp = " << image_bpp << "; nChannel = " << image_nChannel << endl;
     }
     if (!image) {
         delete[] image;
